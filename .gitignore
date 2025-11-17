@@ -1,0 +1,12 @@
+# Ignore finder files
+.DS_store
+
+# Ignore cursor rules folder
+.cursor/rules/
+
+# Ignore virtual environment folder
+.venv/
+
+#Ignore jpeg
+*.jpg
+*.jpeg

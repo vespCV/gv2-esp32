@@ -7,6 +7,14 @@
 # Ignore virtual environment folder
 .venv/
 
+# Ignore platformio
+.pio/
+.vscode/
+
+# Ignore documents folder
+documentation/
+Himax kopie/
+
 #Ignore jpeg
 *.jpg
 *.jpeg

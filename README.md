@@ -1,6 +1,6 @@
 # Vespa velutina detection with Grove Vision AI V2 and esp32-S3
 
-> **Automated detection system for Vespa velutina (Asian hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing and visual feedback via LEDs.**
+> **Automated detection system for Vespa velutina (Asian hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing.**
 
 ## Goal
 
@@ -225,6 +225,8 @@ After flashing is complete:
 
 ## Connection between Grove Vision AI v2 and ESP32-S3
 
+For detailed connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
+
 - **UART Pin Requirements**:
   - **RXD** from the gv2 socket to **TXD GPIO43 (D6**) on the ESP32-S3
   - **TXD** from the gv2 socket to **RXD GPIO44 (D7)** on the ESP32-S3
@@ -241,6 +243,8 @@ After flashing is complete:
   - **Green LED**: GPIO2 (D1) - Apis mellifera
 
 ## Connection between Grove Vision AI v2 and ESP32-S3
+
+For connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
 
 This section outlines the hardware connections required for communication and power. LEDs are used for test purposes. 
 

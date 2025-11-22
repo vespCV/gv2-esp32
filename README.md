@@ -19,23 +19,175 @@ Use the simplest method for quick deployment and testing.
 * **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.
 
-### Flashing YOLO11n Model [work in progress]
+### Flashing YOLO11n Model with UART1 Support
 
-This method requires building custom firmware.
+This guide explains how to flash the custom firmware that enables UART1 communication for ESP32-S3 integration.
 
-1. **Build Firmware:** Compile your firmware.
-2. **Adjust Configuration:** Modify the `APP_TYPE` setting in your build configuration to:
-    ```
-    APP_TYPE = tflm_yolo11_od
-    ```
-3. **Model Placement:** Copy your YOLO11n model file to the following directory:
-    ```
-    model_zoo/tflm_yolo11_od/
-    ```
-4. **Flash:** Flash the compiled firmware onto the Grove Vision AI V2.
-5. **Verification:** The model can be checked using the **Himax AI Toolkit**.
-    * Download the toolkit: [Himax AI Toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip).
-    * Open `index.html` in your browser and connect the Grove Vision AI V2 module.
+#### Prerequisites
+
+Before starting, you need:
+
+1. **Python 3** installed on your computer
+2. **Grove Vision AI V2** module connected to your computer via USB
+3. **This repository** (which includes the model file in the `models` folder)
+
+#### Step 1: Install the Original Repository
+
+1. Open a terminal (Command Prompt on Windows, Terminal on Mac/Linux)
+2. Navigate to a folder where you want to install the repository (for example, your Desktop or Documents folder)
+3. Run the following command to download the repository:
+
+   ```bash
+   git clone --recursive https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2.git
+   ```
+
+4. Wait for the download to complete. This may take a few minutes.
+
+#### Step 2: Install Python Dependencies
+
+1. Navigate into the repository folder:
+
+   ```bash
+   cd Seeed_Grove_Vision_AI_Module_V2
+   ```
+
+2. Install the required Python packages:
+
+   ```bash
+   pip3 install -r xmodem/requirements.txt
+   ```
+
+   **Note:** If you get a "command not found" error, try using `pip` instead of `pip3`, or `python -m pip` instead.
+
+#### Step 3: Replace the Firmware Image File
+
+You need to replace the `output.img` file with the custom firmware that includes UART1 support.
+
+**What file to replace:**
+- Only the `output.img` file needs to be replaced (this is the pre-built firmware image)
+- The file is located at: `we2_image_gen_local/output_case1_sec_wlcsp/output.img`
+
+**Steps:**
+1. Locate the custom firmware image file you received (it should be named `output.img`)
+2. Navigate to the repository folder and find this path:
+
+   ```
+   Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/
+   ```
+
+3. Replace the existing `output.img` file with your custom version (copy your file over the existing one)
+
+   **Note:** If you don't have a pre-built `output.img` file, you will need to build the firmware from source using the modified source files. See the [Change Log](documentation/Change.md) for details on which source files were modified.
+
+#### Step 4: Copy the Model File
+
+The model file is already provided in this repository. You need to copy it to the Himax repository.
+
+1. From this repository (`gv2-esp32`), copy the model file from the `models` folder:
+
+   ```
+   models/vespcv_swiftyolo_int8_vela.tflite
+   ```
+
+2. Paste it into the Himax repository's model directory:
+
+   ```
+   Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/vespcv_swiftyolo_int8_vela.tflite
+   ```
+
+   **Note:** Make sure the file is named exactly `vespcv_swiftyolo_int8_vela.tflite` in the destination folder.
+
+#### Step 5: Find Your USB Port Name
+
+Before flashing, you need to find the name of the USB port where your Grove Vision AI V2 is connected.
+
+**On Mac:**
+1. Open Terminal
+2. Run: `ls /dev/cu.usbmodem*`
+3. You should see something like `/dev/cu.usbmodem58FA1047631` - copy this exact name
+
+**On Linux:**
+1. Open Terminal
+2. Run: `ls /dev/ttyACM*` or `ls /dev/ttyUSB*`
+3. You should see something like `/dev/ttyACM0` - copy this exact name
+
+**On Windows:**
+1. Open Device Manager (search for "Device Manager" in the Start menu)
+2. Look under "Ports (COM & LPT)"
+3. Find "USB Serial Port" or similar - it will show something like "COM3" or "COM4"
+4. Note the COM number (e.g., `COM3`)
+
+#### Step 6: Flash the Firmware
+
+1. Make sure your Grove Vision AI V2 is connected to your computer via USB
+2. Close any serial monitor or terminal programs that might be using the USB port
+3. Open a terminal and navigate to the repository folder:
+
+   ```bash
+   cd Seeed_Grove_Vision_AI_Module_V2
+   ```
+
+4. Run the flashing command. **Replace only the port name** with your actual USB port name:
+
+   **On Mac/Linux:**
+   ```bash
+   python3 xmodem/xmodem_send.py \
+     --port=/dev/cu.usbmodem58FA1047631 \
+     --baudrate=921600 \
+     --protocol=xmodem \
+     --file=we2_image_gen_local/output_case1_sec_wlcsp/output.img \
+     --model="model_zoo/tflm_yolo11_od/vespcv_swiftyolo_int8_vela.tflite 0xB7B000 0x00000"
+   ```
+
+   **On Windows:**
+   ```bash
+   python xmodem\xmodem_send.py ^
+     --port=COM3 ^
+     --baudrate=921600 ^
+     --protocol=xmodem ^
+     --file=we2_image_gen_local\output_case1_sec_wlcsp\output.img ^
+     --model="model_zoo\tflm_yolo11_od\vespcv_swiftyolo_int8_vela.tflite 0xB7B000 0x00000"
+   ```
+
+   **Important adjustments:**
+   - Replace `/dev/cu.usbmodem58FA1047631` (Mac) or `COM3` (Windows) with your actual USB port name from Step 5
+   - The model filename (`vespcv_swiftyolo_int8_vela.tflite`) is already correct - do not change it
+   - On Windows, use backslashes (`\`) instead of forward slashes (`/`) in paths
+
+5. The script will start uploading. You should see a progress bar.
+
+6. **When you see the message "Send data using the xmodem protocol from your terminal":**
+   - **Press the RESET button** on your Grove Vision AI V2 module (black button)
+   - The upload will continue automatically
+
+7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished.
+
+#### Step 7: Verification
+
+After flashing is complete:
+
+1. The Grove Vision AI V2 will restart after you press the reset button (y does not work)
+2. You can verify the firmware is working by:
+   - Connecting to the module via serial monitor at 921600 baud
+   - You should see a startup message: "*** CUSTOM FIRMWARE WITH UART1 SUPPORT ***"
+   - The module should start detecting objects and sending results via UART1
+
+#### Troubleshooting
+
+**Problem: "ModuleNotFoundError: No module named 'serial'"**
+- Solution: Make sure you installed the requirements: `pip3 install -r xmodem/requirements.txt`
+
+**Problem: "Uart port open fail"**
+- Solution: Check that your USB port name is correct and no other program is using it
+
+**Problem: Upload doesn't start**
+- Solution: Make sure to press the RESET button on the Grove Vision AI V2 when prompted
+
+**Problem: "File not found"**
+- Solution: 
+  - Check that the `output.img` file is in the correct location: `we2_image_gen_local/output_case1_sec_wlcsp/output.img`
+  - Check that the model file `vespcv_swiftyolo_int8_vela.tflite` is in: `model_zoo/tflm_yolo11_od/`
+  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository
 
 ## Connection between Grove Vision AI v2 and ESP32-S3
 
@@ -56,7 +208,7 @@ This method requires building custom firmware.
 
 ## Connection between Grove Vision AI v2 and ESP32-S3
 
-This section outlines the hardware connections required for communication and power.
+This section outlines the hardware connections required for communication and power. LEDs are used for test purposes. 
 
 ---
 

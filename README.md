@@ -41,7 +41,7 @@ This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n*
 
 ### Flashing SwiftYOLO
 
-Use the [SenseCraft](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support built in. _Review in progress, will be published to the model list after review and approval_
+Use the [Vespa velutina detection](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support built in. _Review in progress, will be published to the model list after review and approval_
 
 * **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.

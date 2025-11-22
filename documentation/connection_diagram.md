@@ -26,7 +26,11 @@
 
 ## Demo Video
 
-[![Prototype Demo Video](https://img.youtube.com/vi/Ib386vmAq0A/maxresdefault.jpg)](https://www.youtube.com/shorts/Ib386vmAq0A)
+<a href="https://www.youtube.com/shorts/Ib386vmAq0A?autoplay=1">
+  <img src="https://img.youtube.com/vi/Ib386vmAq0A/maxresdefault.jpg" alt="Prototype Demo Video" width="50%" style="max-width: 560px;">
+</a>
+
+<iframe width="50%" height="315" src="https://www.youtube.com/embed/Ib386vmAq0A?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="max-width: 560px;"></iframe>
 
 ## Notes
 

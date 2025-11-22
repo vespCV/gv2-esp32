@@ -24,7 +24,9 @@
 
 ![Prototype Image 2](https://github.com/vespCV/gv2-esp32/blob/main/media/prototype2.jpg)
 
-[Prototype demo video](https://www.youtube.com/shorts/Ib386vmAq0A)
+## Demo Video
+
+[![Prototype Demo Video](https://img.youtube.com/vi/Ib386vmAq0A/maxresdefault.jpg)](https://www.youtube.com/shorts/Ib386vmAq0A)
 
 ## Notes
 

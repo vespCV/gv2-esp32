@@ -15,9 +15,6 @@
 .vscode/
 compile_commands.json
 
-# Ignore documents folder
-documentation/
-
 # Ignore nested Himax firmware
 Himax_gv2_esp32
 

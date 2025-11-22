@@ -41,7 +41,7 @@ This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n*
 
 ### Flashing SwiftYOLO
 
-Use the [SenseCraft](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support build in. _Review in progress, will be published to the model list after review and approval_
+Use the [SenseCraft](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support built in. _Review in progress, will be published to the model list after review and approval_
 
 * **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.
@@ -110,7 +110,7 @@ This repository includes a pre-built firmware image (`output.img`) with UART1 su
    cp images/output.img Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
    ```
 
-**Note:** This firmware image includes custom modifications to enable UART1 communication. See the [Change Log](documentation/Change.md) for details on the modifications.
+**Note:** This firmware image includes custom modifications to enable UART1 communication. See the [Change Log](documentation/changes.md) for details on the modifications.
 
 #### Step 4: Copy the Model File
 
@@ -225,34 +225,11 @@ After flashing is complete:
 
 ## Connection between Grove Vision AI v2 and ESP32-S3
 
-For detailed connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
-
-- **UART Pin Requirements**:
-  - **RXD** from the gv2 socket to **TXD GPIO43 (D6**) on the ESP32-S3
-  - **TXD** from the gv2 socket to **RXD GPIO44 (D7)** on the ESP32-S3
-
-#### XIAO ESP32-S3 to Computer
-- **Connection**: USB-C cable
-- **Purpose**: Programming, serial communication, and power supply
-- **Serial Speed**: 115200 baud (as configured in platformio.ini)
-
-#### XIAO ESP32-S3 
-- **LED Pins**:
-  - **Red LED**: GPIO4 (D3) - Vespa velutina class 3 detection
-  - **Yellow LED**: GPIO3 (D2) - Vespa crabro and vespula sp.
-  - **Green LED**: GPIO2 (D1) - Apis mellifera
-
-## Connection between Grove Vision AI v2 and ESP32-S3
-
 For connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
 
-This section outlines the hardware connections required for communication and power. LEDs are used for test purposes. 
+This section outlines the hardware connections required for communication and power. LEDs are used for test purposes.
 
 ---
-
-### UART Pin Requirements
-
-The Grove Vision AI V2 communicates with the ESP32-S3 via UART.
 
 ### UART Pin Requirements
 

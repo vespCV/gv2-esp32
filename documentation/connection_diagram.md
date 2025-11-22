@@ -30,8 +30,6 @@
   <img src="https://img.youtube.com/vi/Ib386vmAq0A/maxresdefault.jpg" alt="Prototype Demo Video" width="50%" style="max-width: 560px;">
 </a>
 
-<iframe width="50%" height="315" src="https://www.youtube.com/embed/Ib386vmAq0A?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="max-width: 560px;"></iframe>
-
 ## Notes
 
 **LEDs**: Use current-limiting resistors (typically 220Ω-1kΩ) in series with each LED

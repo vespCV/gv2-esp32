@@ -1,4 +1,29 @@
-# gv2-esp32
+# Vespa velutina detection with Grove Vision AI V2 and esp32-S3
+
+## Goal
+
+This project implements an automated detection system for **Vespa velutina** (Asian hornet) using computer vision. The system uses a **Grove Vision AI V2** module for real-time object detection and an **ESP32-S3** microcontroller to process detection results and control indicator LEDs.
+
+The detection model can identify four classes:
+- **Class 0**: Apis mellifera (Honeybee)
+- **Class 1**: Vespa crabro (European hornet)
+- **Class 2**: Vespula sp. (Yellowjacket)
+- **Class 3**: Vespa velutina (Asian hornet) - **Target class**
+
+## Setup Overview
+
+The system consists of two main components:
+
+1. **Grove Vision AI V2**: Performs object detection using a SwiftYOLO (for test purposes) or YOLO11n (improved detection) model and sends detection results via UART1 to the ESP32-S3
+2. **XIAO ESP32-S3**: Receives detection data, processes it, and controls LEDs to indicate detected species
+
+**Key Features:**
+- Real-time object detection with SwiftYOLO model
+- UART1 communication between Grove Vision AI V2 and ESP32-S3
+- Visual feedback via colored LEDs (Red for Vespa velutina, Yellow for other hornets, Green for honeybees)
+- Custom firmware with UART1 support for Grove Vision AI V2
+
+---
 
 * [Flash YOLO Models on Grove Vision AI V2](#flash-yolo-models-on-grove-vision-ai-v2)
     * [Flashing SwiftYOLO](#flashing-swiftyolo)
@@ -10,11 +35,11 @@
 
 ## Flash YOLO Models on Grove Vision AI V2
 
-This guide details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n** model (224x224px) onto the **Grove Vision AI V2** module.
+This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n** model (224x224px) onto the **Grove Vision AI V2** module.
 
 ### Flashing SwiftYOLO
 
-Use the simplest method for quick deployment and testing.
+Use the SenseCraft method for quick deployment and testing of the setup. It has UART1 support build in.
 
 * **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.

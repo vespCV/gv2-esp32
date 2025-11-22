@@ -18,10 +18,6 @@ compile_commands.json
 # Ignore nested Himax firmware
 Himax_gv2_esp32
 
-#Ignore jpeg
-*.jpg
-*.jpeg
-
 ## Himax firmware
 
 # Prerequisites

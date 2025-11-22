@@ -1,5 +1,7 @@
 # Vespa velutina detection with Grove Vision AI V2 and esp32-S3
 
+> **Automated detection system for Vespa velutina (Asian hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing and visual feedback via LEDs.**
+
 ## Goal
 
 This project implements an automated detection system for **Vespa velutina** (Asian hornet) using computer vision. The system uses a **Grove Vision AI V2** module for real-time object detection and an **ESP32-S3** microcontroller to process detection results and control indicator LEDs.
@@ -18,7 +20,7 @@ The system consists of two main components:
 2. **XIAO ESP32-S3**: Receives detection data, processes it, and controls LEDs to indicate detected species
 
 **Key Features:**
-- Real-time object detection with SwiftYOLO model
+- Real-time object detection with YOLO model
 - UART1 communication between Grove Vision AI V2 and ESP32-S3
 - Visual feedback via colored LEDs (Red for Vespa velutina, Yellow for other hornets, Green for honeybees)
 - Custom firmware with UART1 support for Grove Vision AI V2
@@ -39,7 +41,7 @@ This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n*
 
 ### Flashing SwiftYOLO
 
-Use the SenseCraft method for quick deployment and testing of the setup. It has UART1 support build in.
+Use the [SenseCraft](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support build in. _Review in progress, will be published to the model list after review and approval_
 
 * **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.
@@ -84,25 +86,31 @@ Before starting, you need:
 
    **Note:** If you get a "command not found" error, try using `pip` instead of `pip3`, or `python -m pip` instead.
 
-#### Step 3: Replace the Firmware Image File
+#### Step 3: Copy the Custom Firmware Image
 
-You need to replace the `output.img` file with the custom firmware that includes UART1 support.
-
-**What file to replace:**
-- Only the `output.img` file needs to be replaced (this is the pre-built firmware image)
-- The file is located at: `we2_image_gen_local/output_case1_sec_wlcsp/output.img`
+This repository includes a pre-built firmware image (`output.img`) with UART1 support. You need to copy it to the Himax repository location.
 
 **Steps:**
-1. Locate the custom firmware image file you received (it should be named `output.img`)
-2. Navigate to the repository folder and find this path:
+
+1. From this repository (`gv2-esp32`), locate the pre-built firmware image:
 
    ```
-   Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/
+   images/output.img
    ```
 
-3. Replace the existing `output.img` file with your custom version (copy your file over the existing one)
+2. Copy this file to the Himax repository's output directory:
 
-   **Note:** If you don't have a pre-built `output.img` file, you will need to build the firmware from source using the modified source files. See the [Change Log](documentation/Change.md) for details on which source files were modified.
+   ```
+   Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
+   ```
+
+   **Example command** (adjust paths as needed):
+
+   ```bash
+   cp images/output.img Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
+   ```
+
+**Note:** This firmware image includes custom modifications to enable UART1 communication. See the [Change Log](documentation/Change.md) for details on the modifications.
 
 #### Step 4: Copy the Model File
 
@@ -157,7 +165,7 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    **On Mac/Linux:**
    ```bash
    python3 xmodem/xmodem_send.py \
-     --port=/dev/cu.usbmodem58FA1047631 \
+     --port=/dev/cu.usbmodem###### \
      --baudrate=921600 \
      --protocol=xmodem \
      --file=we2_image_gen_local/output_case1_sec_wlcsp/output.img \
@@ -175,7 +183,7 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    ```
 
    **Important adjustments:**
-   - Replace `/dev/cu.usbmodem58FA1047631` (Mac) or `COM3` (Windows) with your actual USB port name from Step 5
+   - Replace `/dev/cu.usbmodem#######` (Mac) or `COM3` (Windows) with your actual USB port name from Step 5
    - The model filename (`vespcv_swiftyolo_int8_vela.tflite`) is already correct - do not change it
    - On Windows, use backslashes (`\`) instead of forward slashes (`/`) in paths
 
@@ -193,6 +201,7 @@ After flashing is complete:
 
 1. The Grove Vision AI V2 will restart after you press the reset button (y does not work)
 2. You can verify the firmware is working by:
+    - Using the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip) select Grove Vsion AI(V2), press `connect` select the port and put some test image in front of the camera to check the detection.
    - Connecting to the module via serial monitor at 921600 baud
    - You should see a startup message: "*** CUSTOM FIRMWARE WITH UART1 SUPPORT ***"
    - The module should start detecting objects and sending results via UART1

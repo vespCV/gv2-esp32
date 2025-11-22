@@ -26,7 +26,7 @@
 
 ## Demo Video
 
-<a href="https://www.youtube.com/shorts/Ib386vmAq0A?autoplay=1">
+<a href="https://www.youtube.com/shorts/Ib386vmAq0A?autoplay=1" target="_blank" rel="noopener noreferrer">
   <img src="https://img.youtube.com/vi/Ib386vmAq0A/maxresdefault.jpg" alt="Prototype Demo Video" width="50%" style="max-width: 560px;">
 </a>
 

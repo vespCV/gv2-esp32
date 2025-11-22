@@ -43,7 +43,7 @@ This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n*
 
 Use the [Vespa velutina detection](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support built in. _Review in progress, will be published to the model list after review and approval_
 
-* **Deployment:** Use the **SenseCraft** website to deploy your model: [SenseCraft](https://sensecraft.seeed.cc/ai/model).
+* **Deployment:** Use the upload the [Vespa velutina detection](https://github.com/vespCV/gv2-esp32/blob/main/models/vespcv_swiftyolo_int8_vela.tflite) to [SenseCraft](https://sensecraft.seeed.cc/ai/model) as long as review is in progress. 
 * **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.
 
 ### Flashing YOLO11n Model with UART1 Support

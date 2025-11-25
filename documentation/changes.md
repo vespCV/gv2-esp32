@@ -215,10 +215,5 @@ Detection results are sent in JSON format:
 
 ### Compatibility
 - ESP32-S3 can parse the JSON format directly
-- Maintains backward compatibility with original UART0 output
+- Maintains backward compatibility with original UART0 output (inference can be tested with Himx AI toolkit)
 
----
-
-## Notes
-- Debug output is extensive and can be removed in production builds if needed
-- The firmware maintains compatibility with the original Seeed Grove Vision AI V2 functionality

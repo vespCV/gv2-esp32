@@ -1,6 +1,6 @@
 # Vespa velutina detection with Grove Vision AI V2 and esp32-S3
 
-> **Automated detection system for Vespa velutina (Asian hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing.**
+> **Automated detection system for Vespa velutina (Asian - Yellow Legged Hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing.**
 
 ## Goal
 
@@ -16,7 +16,7 @@ The detection model can identify four classes:
 
 The system consists of two main components:
 
-1. **Grove Vision AI V2**: Performs object detection using a SwiftYOLO (for test purposes) or YOLO11n (improved detection) model and sends detection results via UART1 to the ESP32-S3
+1. **Grove Vision AI V2**: Performs object detection using a YOLO11n model and sends detection results via UART1 to the ESP32-S3
 2. **XIAO ESP32-S3**: Receives detection data, processes it, and controls LEDs to indicate detected species
 
 **Key Features:**
@@ -27,24 +27,17 @@ The system consists of two main components:
 
 ---
 
-* [Flash YOLO Models on Grove Vision AI V2](#flash-yolo-models-on-grove-vision-ai-v2)
-    * [Flashing SwiftYOLO](#flashing-swiftyolo)
-    * [Flashing YOLO11n Model](#flashing-yolo11n-model)
+**Quick Start:** For a simpler setup via the SenseCraft web platform, see the [SwiftYOLO Guide](documentation/swift-yolo.md) (192x192px model with UART1 support).
+
+---
+
+* [Flash YOLO11n Model on Grove Vision AI V2](#flash-yolo11n-model-on-grove-vision-ai-v2)
 * [Connection between Grove Vision AI v2 and ESP32-S3](#connection-between-grove-vision-ai-v2-and-esp32-s3)
     * [UART Pin Requirements](#uart-pin-requirements)
     * [XIAO ESP32-S3 to Computer](#xiao-esp32-s3-to-computer)
     * [XIAO ESP32-S3 LED Pins](#xiao-esp32-s3-led-pins)
 
-## Flash YOLO Models on Grove Vision AI V2
-
-This part details how to flash a **SwiftYOLO** model (192x192px) or a **YOLO11n** model (224x224px) onto the **Grove Vision AI V2** module.
-
-### Flashing SwiftYOLO
-
-Use the [Vespa velutina detection](https://sensecraft.seeed.cc/ai/model/detail?id=61707&time=1763798762425) SwiftYOLO model for quick deployment and testing of the setup. It has UART1 support built in. _Review in progress, will be published to the model list after review and approval_
-
-* **Deployment:** Use the upload the [Vespa velutina detection](https://github.com/vespCV/gv2-esp32/blob/main/models/vespcv_swiftyolo_int8_vela.tflite) to [SenseCraft](https://sensecraft.seeed.cc/ai/model) as long as review is in progress. 
-* **Verification:** The function of the model can be checked immediately on the **SenseCraft** site after flashing.
+## Flash YOLO11n Model on Grove Vision AI V2
 
 ### Flashing YOLO11n Model with UART1 Support
 
@@ -119,16 +112,16 @@ The model file is already provided in this repository. You need to copy it to th
 1. From this repository (`gv2-esp32`), copy the model file from the `models` folder:
 
    ```
-   models/vespcv_swiftyolo_int8_vela.tflite
+   models/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
    ```
 
 2. Paste it into the Himax repository's model directory:
 
    ```
-   Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/vespcv_swiftyolo_int8_vela.tflite
+   Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
    ```
 
-   **Note:** Make sure the file is named exactly `vespcv_swiftyolo_int8_vela.tflite` in the destination folder.
+   **Note:** Make sure the file is named exactly `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` in the destination folder.
 
 #### Step 5: Find Your USB Port Name
 
@@ -169,7 +162,7 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
      --baudrate=921600 \
      --protocol=xmodem \
      --file=we2_image_gen_local/output_case1_sec_wlcsp/output.img \
-     --model="model_zoo/tflm_yolo11_od/vespcv_swiftyolo_int8_vela.tflite 0xB7B000 0x00000"
+     --model="model_zoo/tflm_yolo11_od/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite 0xB7B000 0x00000"
    ```
 
    **On Windows:**
@@ -179,12 +172,12 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
      --baudrate=921600 ^
      --protocol=xmodem ^
      --file=we2_image_gen_local\output_case1_sec_wlcsp\output.img ^
-     --model="model_zoo\tflm_yolo11_od\vespcv_swiftyolo_int8_vela.tflite 0xB7B000 0x00000"
+     --model="model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite 0xB7B000 0x00000"
    ```
 
    **Important adjustments:**
    - Replace `/dev/cu.usbmodem#######` (Mac) or `COM3` (Windows) with your actual USB port name from Step 5
-   - The model filename (`vespcv_swiftyolo_int8_vela.tflite`) is already correct - do not change it
+   - The model filename (`yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite`) is already correct - do not change it
    - On Windows, use backslashes (`\`) instead of forward slashes (`/`) in paths
 
 5. The script will start uploading. You should see a progress bar.
@@ -220,7 +213,7 @@ After flashing is complete:
 **Problem: "File not found"**
 - Solution: 
   - Check that the `output.img` file is in the correct location: `we2_image_gen_local/output_case1_sec_wlcsp/output.img`
-  - Check that the model file `vespcv_swiftyolo_int8_vela.tflite` is in: `model_zoo/tflm_yolo11_od/`
+  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `model_zoo/tflm_yolo11_od/`
   - Make sure you copied the model file from the `models` folder in this repository to the Himax repository
 
 ## Connection between Grove Vision AI v2 and ESP32-S3

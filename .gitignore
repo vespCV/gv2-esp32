@@ -4,8 +4,10 @@
 # Ignore cache folder
 *.cache/
 
-# Ignore cursor rules folder
+# Ignore cursor rules folder and workspace file
 .cursor/rules/
+gv2-esp32.code-workspace
+
 
 # Ignore virtual environment folder
 .venv/

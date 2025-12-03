@@ -27,21 +27,32 @@ The system consists of two main components:
 
 ---
 
-**Quick Start:** For a simpler setup via the SenseCraft web platform, see the [SwiftYOLO Guide](documentation/swift-yolo.md) (192x192px model with UART1 support).
+**Test setup (optional):** For a simple setup via the SenseCraft web platform to test the Grove Vision AI V2, see the [SwiftYOLO Guide](documentation/swift-yolo.md) (192x192px model with UART1 support).
 
 ---
 
-* [Flash YOLO11n Model on Grove Vision AI V2](#flash-yolo11n-model-on-grove-vision-ai-v2)
-* [Connection between Grove Vision AI v2 and ESP32-S3](#connection-between-grove-vision-ai-v2-and-esp32-s3)
-    * [UART Pin Requirements](#uart-pin-requirements)
-    * [XIAO ESP32-S3 to Computer](#xiao-esp32-s3-to-computer)
-    * [XIAO ESP32-S3 LED Pins](#xiao-esp32-s3-led-pins)
+## Table of Contents
+* [Getting Started](#getting-started)
+  * [1 Grove Vision AI V2](#1-grove-vision-ai-v2)
+    * [1.1 Install this github repository](#11-install-this-github-repository-gv2-esp32)
+    * [1.2 Install Python Dependencies](#12-install-python-dependencies)
+    * [1.3 Copy the Custom Firmware Image for the Grove Vision AI V2](#13-copy-the-custom-firmware-image-for-the-grove-vision-ai-v2)
+    * [1.4 Copy the YOLO11n Model File](#14-copy-the-yolo11n-model-file)
+    * [1.5 Find Your USB Port Name](#15-find-your-usb-port-name)
+    * [1.6 Flash the Firmware to the Grove Vision AI V2](#16-flash-the-firmware-to-the-grove-vision-ai-v2)
+    * [1.7 Verification](#17-verification)
+    * [Troubleshooting](#troubleshooting)
+  * [2 ESP32-S3](#2-esp32-s3)
+* [3 Connection between Grove Vision AI v2 and ESP32-S3](#3-connection-between-grove-vision-ai-v2-and-esp32-s3)
+  * [UART Pin Requirements](#uart-pin-requirements)
+  * [XIAO ESP32-S3 to Computer](#xiao-esp32-s3-to-computer)
+  * [XIAO ESP32-S3 LED Pins](#xiao-esp32-s3-led-pins)
 
-## Flash YOLO11n Model on Grove Vision AI V2
+## Getting Started
 
-### Flashing YOLO11n Model with UART1 Support
+### 1 Grove Vision AI V2
 
-This guide explains how to flash the custom firmware that enables UART1 communication for ESP32-S3 integration.
+The Grove Vision AI V2 module needs special software (firmware) installed so it can send detection results to the ESP32-S3 microcontroller via UART1. This guide shows you how to install this software and the detection model (YOLO11n) that recognizes Asian hornets and look-alikes.
 
 #### Prerequisites
 
@@ -49,26 +60,45 @@ Before starting, you need:
 
 1. **Python 3** installed on your computer
 2. **Grove Vision AI V2** module connected to your computer via USB
-3. **This repository** (which includes the model file in the `models` folder)
+3. **This repository**
 
-#### Step 1: Install the Original Repository
+Steps to follow:
+
+1. Clone this repository to your computer
+2. [Set up Grove Vision AI V2](#1-grove-vision-ai-v2): flash firmware and model
+3. [Set up ESP32-S3](#2-esp32-s3): upload code to ESP32-S3
+4. [Connect hardware](#3-connection-between-grove-vision-ai-v2-and-esp32-s3): connect Grove Vision AI V2 and ESP32-S3
+5. [Verify the system](#17-verification): test the detection system
+
+#### 1.1: Install this github repository (`gv2-esp32`)
 
 1. Open a terminal (Command Prompt on Windows, Terminal on Mac/Linux)
-2. Navigate to a folder where you want to install the repository (for example, your Desktop or Documents folder)
-3. Run the following command to download the repository:
+2. Clone this repository (`gv2-esp32`) to your computer:
 
    ```bash
-   git clone --recursive https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2.git
+   git clone https://github.com/vespCV/gv2-esp32.git
    ```
 
-4. Wait for the download to complete. This may take a few minutes.
+3. Navigate into the cloned repository:
 
-#### Step 2: Install Python Dependencies
+   ```bash
+   cd gv2-esp32
+   ```
+
+4. Clone the Himax repository:
+
+   ```bash
+   git clone --recursive https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2.git tools/Seeed_Grove_Vision_AI_Module_V2
+   ```
+
+5. Wait for the download to complete. This may take a few minutes.
+
+#### 1.2: Install Python Dependencies
 
 1. Navigate into the repository folder:
 
    ```bash
-   cd Seeed_Grove_Vision_AI_Module_V2
+   cd tools/Seeed_Grove_Vision_AI_Module_V2
    ```
 
 2. Install the required Python packages:
@@ -79,51 +109,43 @@ Before starting, you need:
 
    **Note:** If you get a "command not found" error, try using `pip` instead of `pip3`, or `python -m pip` instead.
 
-#### Step 3: Copy the Custom Firmware Image
+#### 1.3: Copy the Custom Firmware Image for the Grove Vision AI V2
 
-This repository includes a pre-built firmware image (`output.img`) with UART1 support. You need to copy it to the Himax repository location.
+This repository includes a pre-built firmware image (`output.img`) with UART1 support. Copy it from the `images` folder to the Himax repository's output directory.
 
-**Steps:**
+**Commands to copy the firmware image**
 
-1. From this repository (`gv2-esp32`), locate the pre-built firmware image:
+cd to the project root and then copy the firmware with this command
 
-   ```
-   images/output.img
-   ```
-
-2. Copy this file to the Himax repository's output directory:
-
-   ```
-   Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
-   ```
-
-   **Example command** (adjust paths as needed):
-
+   **On Mac/Linux:**
    ```bash
-   cp images/output.img Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
+   cp images/output.img tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img
+   ```
+
+   **On Windows:**
+   ```bash
+   copy images\output.img tools\Seeed_Grove_Vision_AI_Module_V2\we2_image_gen_local\output_case1_sec_wlcsp\output.img
    ```
 
 **Note:** This firmware image includes custom modifications to enable UART1 communication. See the [Change Log](documentation/changes.md) for details on the modifications.
 
-#### Step 4: Copy the Model File
+#### 1.4: Copy the YOLO11n Model File
 
-The model file is already provided in this repository. You need to copy it to the Himax repository.
+Copy it from the `models` folder to the repository's model directory.
 
-1. From this repository (`gv2-esp32`), copy the model file from the `models` folder:
+**Commands** (from the project root):
 
-   ```
-   models/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
-   ```
-
-2. Paste it into the Himax repository's model directory:
-
-   ```
-   Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
+   **On Mac/Linux:**
+   ```bash
+   cp models/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
    ```
 
-   **Note:** Make sure the file is named exactly `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` in the destination folder.
+   **On Windows:**
+   ```bash
+   copy models\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite tools\Seeed_Grove_Vision_AI_Module_V2\model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
+   ```
 
-#### Step 5: Find Your USB Port Name
+#### 1.5: Find Your USB Port Name
 
 Before flashing, you need to find the name of the USB port where your Grove Vision AI V2 is connected.
 
@@ -141,16 +163,16 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
 1. Open Device Manager (search for "Device Manager" in the Start menu)
 2. Look under "Ports (COM & LPT)"
 3. Find "USB Serial Port" or similar - it will show something like "COM3" or "COM4"
-4. Note the COM number (e.g., `COM3`)
+4. Note the COM number (e.g., `COM5`)
 
-#### Step 6: Flash the Firmware
+#### 1.6: Flash the Firmware to the Grove Vision AI V2
 
 1. Make sure your Grove Vision AI V2 is connected to your computer via USB
 2. Close any serial monitor or terminal programs that might be using the USB port
-3. Open a terminal and navigate to the repository folder:
+3. Open a terminal and navigate to the repository folder (from the project root):
 
    ```bash
-   cd Seeed_Grove_Vision_AI_Module_V2
+   cd tools/Seeed_Grove_Vision_AI_Module_V2
    ```
 
 4. Run the flashing command. **Replace only the port name** with your actual USB port name:
@@ -166,19 +188,14 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    ```
 
    **On Windows:**
-   ```bash
-   python xmodem\xmodem_send.py ^
-     --port=COM3 ^
-     --baudrate=921600 ^
-     --protocol=xmodem ^
-     --file=we2_image_gen_local\output_case1_sec_wlcsp\output.img ^
-     --model="model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite 0xB7B000 0x00000"
+   ```powershell
+   python xmodem\xmodem_send.py `
+     --port COM5 `
+     --baudrate 921600 `
+     --protocol xmodem `
+     --file "we2_image_gen_local\output_case1_sec_wlcsp\output.img" `
+     --model "model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite 0xB7B000 0x00000"
    ```
-
-   **Important adjustments:**
-   - Replace `/dev/cu.usbmodem#######` (Mac) or `COM3` (Windows) with your actual USB port name from Step 5
-   - The model filename (`yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite`) is already correct - do not change it
-   - On Windows, use backslashes (`\`) instead of forward slashes (`/`) in paths
 
 5. The script will start uploading. You should see a progress bar.
 
@@ -188,16 +205,27 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
 
 7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished.
 
-#### Step 7: Verification
+*** Troubleshooting** 
+**Troubleshooting**
+
+1. To get the Grove Vision AI V2 into boot mode, sometimes you need to:
+   - Unplug the board from USB-C
+   - Press and hold the boot button (white)
+   - Plug in the USB-C cable
+   - Press and release the reset button (black)
+   - Release the boot button
+
+2. **To Do:** Check xmodem_send.py: https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/commits/main/xmodem/xmodem_send.py (commit from 3 weeks ago did not work for me...)
+
+#### 1.7: Verification
 
 After flashing is complete:
 
 1. The Grove Vision AI V2 will restart after you press the reset button (y does not work)
 2. You can verify the firmware is working by:
-    - Using the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip) select Grove Vsion AI(V2), press `connect` select the port and put some test image in front of the camera to check the detection.
-   - Connecting to the module via serial monitor at 921600 baud
-   - You should see a startup message: "*** CUSTOM FIRMWARE WITH UART1 SUPPORT ***"
-   - The module should start detecting objects and sending results via UART1
+    - Download and open the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip)
+    - Select "Grove Vision AI(V2)", click "connect", choose your USB port
+    - Point the camera at a test image to see if detection works
 
 #### Troubleshooting
 
@@ -212,11 +240,16 @@ After flashing is complete:
 
 **Problem: "File not found"**
 - Solution: 
-  - Check that the `output.img` file is in the correct location: `we2_image_gen_local/output_case1_sec_wlcsp/output.img`
-  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `model_zoo/tflm_yolo11_od/`
-  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository
+  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see Step 1)
+  - Check that the `output.img` file is in the correct location: `tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img`
+  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/`
+  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see Step 4)
 
-## Connection between Grove Vision AI v2 and ESP32-S3
+### 2 ESP32-S3
+
+
+
+## 3 Connection between Grove Vision AI v2 and ESP32-S3
 
 For connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
 

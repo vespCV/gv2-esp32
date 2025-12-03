@@ -223,9 +223,14 @@ After flashing is complete:
 
 1. The Grove Vision AI V2 will restart after you press the reset button (y does not work)
 2. You can verify the firmware is working by:
-    - Download and open the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip)
+    - Download the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip)
+    - Unzip `Himax_AI_web_toolkit.zip`
+    - Open the Himax_AI_web_toolkit folder en click `index.html`
     - Select "Grove Vision AI(V2)", click "connect", choose your USB port
+      <img src="media/himax_connect.png" alt="Serial port connection dialog" width="400">
     - Point the camera at a test image to see if detection works
+      <img src="media/himax_test.png" alt="Himax AI web toolkit with detection results" width="500">
+      (to do: replace coco dataset class names by our classes)
 
 #### Troubleshooting
 

@@ -227,6 +227,20 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    - Plug in the USB-C cable
    - Press and release the reset button (black)
    - Release the boot button
+2. If you do not see `=== CUSTOM FIRMWARE WITH UART1 SUPPORT - BUILD DATE: Nov 21 2025 16:58:18 ===` after flashing, you can try to replace `xmodem_send.py` with the version from this repository. From the project root, run:
+
+   **On Mac/Linux:**
+   ```bash
+   cp xmodem/xmodem_send.py tools/Seeed_Grove_Vision_AI_Module_V2/xmodem/xmodem_send.py
+   ```
+
+   **On Windows:**
+   ```bash
+   copy xmodem\xmodem_send.py tools\Seeed_Grove_Vision_AI_Module_V2\xmodem\xmodem_send.py
+   ```
+
+   Then try flashing again.
+
 
 #### 1.7: Verification
 
@@ -321,8 +335,10 @@ If you prefer using the command line:
 
 After uploading is complete:
 
-1. The ESP32-S3 will restart automatically. If it doesn't restart, unplug the USB-C cable and reconnect it.2. On startup, all three LEDs (Green, Yellow, Red) should blink once for 500ms to indicate the system is running.3. Open the Serial Monitor to see debug output:   - Click the **Serial Monitor** button (plug icon) in PlatformIO IDE   - Or use the keyboard shortcut: `Ctrl+Alt+S` (Windows/Linux) or `Cmd+Option+S` (Mac)   - Or use the menu: PlatformIO → Se
-   - Expected output:
+1. The ESP32-S3 will restart automatically. If it doesn't restart, unplug the USB-C cable and reconnect it.
+2. On startup, all three LEDs (Green, Yellow, Red) should blink once for 500ms to indicate the system is running.
+3. Open the Serial Monitor to see debug output:   - Click the **Serial Monitor** button (plug icon) in PlatformIO IDE   - Or use the keyboard shortcut: `Ctrl+Alt+S` (Windows/Linux) or `Cmd+Option+S` (Mac)   - Or use the menu: PlatformIO → Se
+4. Expected output:
 
       <img src="media/system_active_receiving_detections.png" alt="Serial port connection dialog" width="400">
 

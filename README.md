@@ -241,23 +241,6 @@ After flashing is complete:
       <img src="media/himax_test.png" alt="Himax AI web toolkit with detection results" width="500">
       
 
-#### Troubleshooting
-
-**Problem: "ModuleNotFoundError: No module named 'serial'"**
-- Solution: Make sure you installed the requirements: `pip3 install -r xmodem/requirements.txt`
-
-**Problem: "Uart port open fail"**
-- Solution: Check that your USB port name is correct and no other program is using it
-
-**Problem: Upload doesn't start**
-- Solution: Make sure to press the RESET button on the Grove Vision AI V2 when prompted
-
-**Problem: "File not found"**
-- Solution: 
-  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see Step 1)
-  - Check that the `output.img` file is in the correct location: `tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img`
-  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/`
-  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see Step 4)
 
 ### 2 ESP32-S3
 
@@ -340,33 +323,24 @@ After uploading is complete:
 
 ## 3 Connection between Grove Vision AI v2 and ESP32-S3
 
-For connection diagrams and prototype images, see the [Connection Diagram documentation](https://github.com/vespCV/gv2-esp32/blob/main/documentation/connection_diagram.md).
-
-This section outlines the hardware connections required for communication and power. LEDs are used for test purposes.
+For connection diagrams and prototype images, see the [Connection Diagram documentation](documentation/connection_diagram.md).
 
 ---
 
-### UART Pin Requirements
+#### Troubleshooting
 
-The Grove Vision AI V2 communicates with the ESP32-S3 via UART and requires separate power connections. 
+**Grove Vision Problem: "ModuleNotFoundError: No module named 'serial'"**
+- Solution: Make sure you installed the requirements: `pip3 install -r xmodem/requirements.txt`
 
-* **RXD (gv2) $\rightarrow$ TXD (ESP32-S3):** The **RXD** pin from the Grove Vision AI V2 socket connects to **GPIO43 (D6)** on the ESP32-S3.
-* **TXD (gv2) $\rightarrow$ RXD (ESP32-S3):** The **TXD** pin from the Grove Vision AI V2 socket connects to **GPIO44 (D7)** on the ESP32-S3.
-* **Power (5V):** The **5V** line from the ESP32-S3 connects to the Grove Vision AI V2 socket (or via the Grove cable).
-* **GND:** The **GND** line from the ESP32-S3 connects to the Grove Vision AI V2 socket (or via the Grove cable).
+**Grove Vision Problem: "Uart port open fail"**
+- Solution: Check that your USB port name is correct and no other program is using it
 
-### XIAO ESP32-S3 to Computer
+**Grove Vision Problem: Upload doesn't start**
+- Solution: Make sure to press the RESET button on the Grove Vision AI V2 when prompted
 
-* **Connection:** Use a **USB-C cable**.
-* **Purpose:** Provides **programming**, **serial communication**, and **power supply**.
-* **Serial Speed:** The communication speed is set to **115200 baud** (as configured in `platformio.ini`).
-
-### XIAO ESP32-S3 LED Pins
-
-These pins are configured to indicate specific detection events.
-
-* **Red LED (GPIO4 / D3):** Indicates **Vespa velutina** (Asian hornet) detection (Class 3).
-* **Yellow LED (GPIO3 / D2):** Indicates **Vespa crabro** (European hornet) and **Vespula sp.** (Yellowjacket) detection.
-* **Green LED (GPIO2 / D1):** Indicates **Apis mellifera** (Honeybee) detection.
-
-
+**Grove Vision Problem: "File not found"**
+- Solution: 
+  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see Step 1)
+  - Check that the `output.img` file is in the correct location: `tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img`
+  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/`
+  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see Step 4)

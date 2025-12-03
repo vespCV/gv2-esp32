@@ -50,6 +50,13 @@ The system consists of two main components:
 
 ## Getting Started
 
+Follow these steps to set up the detection system:
+
+1. [Set up Grove Vision AI V2](#1-grove-vision-ai-v2): Clone repositories, install dependencies, flash custom firmware and model
+2. [Set up ESP32-S3](#2-esp32-s3): Install PlatformIO and upload detection code to ESP32-S3
+3. [Connect hardware](#3-connection-between-grove-vision-ai-v2-and-esp32-s3): Connect Grove Vision AI V2, ESP32-S3, and indicator LEDs
+
+
 ### 1 Grove Vision AI V2
 
 The Grove Vision AI V2 module needs custom software (firmware) installed so it can send detection results to the ESP32-S3 microcontroller via UART1. This guide shows you how to install the HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2 repository, and then flash the custom firmware image and the detection model (YOLO11n) that recognizes Asian hornets and look-alikes.
@@ -63,13 +70,6 @@ Before starting, you need:
 2. **Grove Vision AI V2** module connected to your computer via USB
 3. **This repository**
 
-Steps to follow:
-
-1. Clone this repository to your computer
-2. [Set up Grove Vision AI V2](#1-grove-vision-ai-v2): flash firmware and model
-3. [Set up ESP32-S3](#2-esp32-s3): upload code to ESP32-S3
-4. [Connect hardware](#3-connection-between-grove-vision-ai-v2-and-esp32-s3): connect Grove Vision AI V2 and ESP32-S3
-5. [Verify the system](#17-verification): test the detection system
 
 #### 1.1: Install this github repository (`gv2-esp32`)
 
@@ -92,23 +92,7 @@ Steps to follow:
    git clone --recursive https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2.git tools/Seeed_Grove_Vision_AI_Module_V2
    ```
 
-5. Wait for the download to complete. This may take a few minutes.
-
-#### 1.2: Install Python Dependencies
-
-1. Navigate into the repository folder:
-
-   ```bash
-   cd tools/Seeed_Grove_Vision_AI_Module_V2
-   ```
-
-2. Install the required Python packages:
-
-   ```bash
-   pip3 install -r xmodem/requirements.txt
-   ```
-
-   **Note:** If you get a "command not found" error, try using `pip` instead of `pip3`, or `python -m pip` instead.
+5. Follow the [How to build the firmware?](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2#how-to-build-the-firmware)
 
 #### 1.3: Copy the Custom Firmware Image for the Grove Vision AI V2
 
@@ -166,7 +150,6 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
 1. Open Device Manager (search for "Device Manager" in the Start menu)
 2. Look under "Ports (COM & LPT)"
 3. Find "USB Serial Port" or similar - it will show something like "COM3" or "COM4"
-4. Note the COM number (e.g., `COM5`)
 
 #### 1.6: Flash the Firmware to the Grove Vision AI V2
 
@@ -178,7 +161,7 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    cd tools/Seeed_Grove_Vision_AI_Module_V2
    ```
 
-4. Run the flashing command. **Replace only the port name** with your actual USB port name:
+4. Run the flashing command. **Replace the port name** with your actual USB port name:
 
    **On Mac/Linux:**
    ```bash

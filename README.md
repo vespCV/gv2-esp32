@@ -32,7 +32,6 @@ The system consists of two main components:
 ---
 
 ## Table of Contents
-* [Getting Started](#getting-started)
   * [1 Grove Vision AI V2](#1-grove-vision-ai-v2)
     * [1.1 Install this github repository](#11-install-this-github-repository-gv2-esp32)
     * [1.2 Install Python Dependencies](#12-install-python-dependencies)
@@ -43,10 +42,11 @@ The system consists of two main components:
     * [1.7 Verification](#17-verification)
     * [Troubleshooting](#troubleshooting)
   * [2 ESP32-S3](#2-esp32-s3)
+    * [2.1 Install PlatformIO](#21-install-platformio-if-not-already-installed)
+    * [2.2 Open the Project in PlatformIO](#22-open-the-project-in-platformio)
+    * [2.3 Upload Code to ESP32-S3](#23-upload-code-to-esp32-s3)
+    * [2.4 Verification](#24-verification)
 * [3 Connection between Grove Vision AI v2 and ESP32-S3](#3-connection-between-grove-vision-ai-v2-and-esp32-s3)
-  * [UART Pin Requirements](#uart-pin-requirements)
-  * [XIAO ESP32-S3 to Computer](#xiao-esp32-s3-to-computer)
-  * [XIAO ESP32-S3 LED Pins](#xiao-esp32-s3-led-pins)
 
 ## Getting Started
 

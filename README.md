@@ -204,7 +204,7 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    - **Press the RESET button** on your Grove Vision AI V2 module (black button)
    - Often it will start automatically
 
-7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished. Expected output:
+7. Wait for the upload to complete. Expected output:
    
    <img src="media/xmodem_download_burn_FW_image.png" alt="Serial port connection dialog" width="400">
    
@@ -216,6 +216,9 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    
    <img src="media/custom_FW_check_builddate_nov_21_2025.png" alt="Serial port connection dialog" width="400">
 
+**Note:** Check if you see: === CUSTOM FIRMWARE WITH UART1 SUPPORT - BUILD DATE: Nov 21 2025 16:58:18 ===. If flashing fails, check the xmodem_send.py version. Some recent commits may have issues: https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/commits/main/xmodem/xmodem_send.py
+
+
 **Troubleshooting**
 
 1. To get the Grove Vision AI V2 into boot mode, sometimes you need to:
@@ -224,8 +227,6 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    - Plug in the USB-C cable
    - Press and release the reset button (black)
    - Release the boot button
-
-2. **Note:** If flashing fails, check the xmodem_send.py version. Some recent commits may have issues: https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/commits/main/xmodem/xmodem_send.py
 
 #### 1.7: Verification
 
@@ -320,18 +321,10 @@ If you prefer using the command line:
 
 After uploading is complete:
 
-1. The ESP32-S3 will restart automatically
-2. Open the Serial Monitor to see debug output:
-   - Click the **Serial Monitor** button (plug icon) in PlatformIO IDE
-   - Or use the keyboard shortcut: `Ctrl+Alt+S` (Windows/Linux) or `Cmd+Option+S` (Mac)
-   - Or use the menu: PlatformIO → Serial Monitor
-3. You should see:
-   - Startup messages: `=== GV2 UART1 Debug Test ===`
-   - `Initializing...`
-   - `=== Ready to receive ===`
-   - `LED Mapping:` with the LED pin assignments
-   - `Waiting for detection data from GV2...`
-4. The LEDs should blink in sequence (Green → Yellow → Red) to indicate the system is running
+1. The ESP32-S3 will restart automatically. If it doesn't restart, unplug the USB-C cable and reconnect it.2. On startup, all three LEDs (Green, Yellow, Red) should blink once for 500ms to indicate the system is running.3. Open the Serial Monitor to see debug output:   - Click the **Serial Monitor** button (plug icon) in PlatformIO IDE   - Or use the keyboard shortcut: `Ctrl+Alt+S` (Windows/Linux) or `Cmd+Option+S` (Mac)   - Or use the menu: PlatformIO → Se
+   - Expected output:
+
+      <img src="media/system_active_receiving_detections.png" alt="Serial port connection dialog" width="400">
 
 
 ## 3 Connection between Grove Vision AI v2 and ESP32-S3

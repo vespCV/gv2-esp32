@@ -116,7 +116,7 @@ This repository includes a pre-built firmware image (`output.img`) with UART1 su
 
 **Commands to copy the firmware image**
 
-cd to the project root and then copy the firmware with this command
+From the project root, copy the firmware with this command:
 
    **On Mac/Linux:**
    ```bash
@@ -198,13 +198,23 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
      --model "model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite 0xB7B000 0x00000"
    ```
 
-5. The script will start uploading. You should see a progress bar.
+5. The script will start uploading. 
 
 6. **When you see the message "Send data using the xmodem protocol from your terminal":**
    - **Press the RESET button** on your Grove Vision AI V2 module (black button)
-   - The upload will continue automatically
+   - Often it will start automatically
 
-7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished.
+7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished. Expected output:
+   
+   <img src="media/xmodem_download_burn_FW_image.png" alt="Serial port connection dialog" width="400">
+   
+   Or with the updated repository:
+   
+   <img src="media/xmodem_download_burn_FW_image_new.png" alt="Serial port connection dialog" width="400">
+
+8. After the upload completes, you may be prompted "Do you want to end file transmission and reboot system? (y)". **Pressing 'y' will NOT reset the Grove Vision AI V2.** Instead, **press the RESET button** (black button) on the Grove Vision AI V2 module. The Grove Vision AI V2 will restart and start detecting. Expected output:
+   
+   <img src="media/custom_FW_check_builddate_nov_21_2025.png" alt="Serial port connection dialog" width="400">
 
 **Troubleshooting**
 
@@ -215,25 +225,28 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
    - Press and release the reset button (black)
    - Release the boot button
 
-2. **To Do:** Check xmodem_send.py: https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/commits/main/xmodem/xmodem_send.py (commit from 3 weeks ago did not work for me...)
+2. **Note:** If flashing fails, check the xmodem_send.py version. Some recent commits may have issues: https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/commits/main/xmodem/xmodem_send.py
 
 #### 1.7: Verification
 
 After flashing is complete:
 
-1. The Grove Vision AI V2 will restart after you press the reset button (y does not work)
+1. The Grove Vision AI V2 will restart after you press the reset button (pressing 'y' does not work - you must physically press the reset button)
 2. You can verify the firmware is working by:
     - Download the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip)
     - Unzip `Himax_AI_web_toolkit.zip`
-    - Open the Himax_AI_web_toolkit folder en click `index.html`
-    - (Optional) Copy the custom JavaScript file to display the correct class names (from the project root):
+    - Open the Himax_AI_web_toolkit folder and click `index.html`
+    - (Optional) Copy the custom JavaScript file to display the correct class names (Apis mellifera, Vespa crabro, Vespula sp., Vespa velutina) instead of the default COCO80 dataset classes (person, car, bicycle, motorcycle, etc.) from the project root:
       
-      **On Mac/Linux:**sh
+      **On Mac/Linux:**
+      ```bash
       cp tools/Seeed_Grove_Vision_AI_Module_V2/index-legacy.51f14f00.js tools/Seeed_Grove_Vision_AI_Module_V2/Himax_AI_web_toolkit/assets/index-legacy.51f14f00.js
-            
+      ```
+      
       **On Windows:**
- 
+      ```bash
       copy tools\Seeed_Grove_Vision_AI_Module_V2\index-legacy.51f14f00.js tools\Seeed_Grove_Vision_AI_Module_V2\Himax_AI_web_toolkit\assets\index-legacy.51f14f00.js
+      ```
       
     - Select "Grove Vision AI(V2)", click "connect", choose your USB port
       <img src="media/himax_connect.png" alt="Serial port connection dialog" width="400">
@@ -285,7 +298,7 @@ pip install platformio
 #### 2.3: Upload Code to ESP32-S3
 
 1. Make sure your XIAO ESP32-S3 is connected to your computer via USB-C
-2. In PlatformIO IDE, click the **flash** button (→ arrow icon) in the bottom toolbar, or:
+2. In PlatformIO IDE, click the **Upload** button (→ arrow icon) in the bottom toolbar, or:
    - Use the keyboard shortcut: `Ctrl+Alt+U` (Windows/Linux) or `Cmd+Option+U` (Mac)
    - Or use the menu: PlatformIO → Upload
 3. PlatformIO will:
@@ -329,18 +342,18 @@ For connection diagrams and prototype images, see the [Connection Diagram docume
 
 #### Troubleshooting
 
-**Grove Vision Problem: "ModuleNotFoundError: No module named 'serial'"**
+**Problem: "ModuleNotFoundError: No module named 'serial'"**
 - Solution: Make sure you installed the requirements: `pip3 install -r xmodem/requirements.txt`
 
-**Grove Vision Problem: "Uart port open fail"**
+**Problem: "Uart port open fail"**
 - Solution: Check that your USB port name is correct and no other program is using it
 
-**Grove Vision Problem: Upload doesn't start**
+**Problem: Upload doesn't start**
 - Solution: Make sure to press the RESET button on the Grove Vision AI V2 when prompted
 
-**Grove Vision Problem: "File not found"**
+**Problem: "File not found"**
 - Solution: 
-  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see Step 1)
+  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see [1.1: Install this github repository](#11-install-this-github-repository-gv2-esp32))
   - Check that the `output.img` file is in the correct location: `tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img`
   - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/`
-  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see Step 4)
+  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see [1.4: Copy the YOLO11n Model File](#14-copy-the-yolo11n-model-file))

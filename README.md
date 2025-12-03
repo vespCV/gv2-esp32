@@ -130,20 +130,22 @@ From the project root, copy the firmware with this command:
 
 **Note:** This firmware image includes custom modifications to enable UART1 communication. See the [Change Log](documentation/changes.md) for details on the modifications.
 
-#### 1.4: Copy the YOLO11n Model File
+#### 1.4: Copy the YOLO11n Model File and Makefile
 
-Copy it from the `models` folder to the repository's model directory.
+Copy the model file from the `models` folder and the makefile from the `makefile` folder to the Himax repository.
 
 **Commands** (from the project root):
 
    **On Mac/Linux:**
    ```bash
    cp models/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
+   cp makefile/makefile tools/Seeed_Grove_Vision_AI_Module_V2/EPII_CM55M_APP_S/makefile
    ```
 
    **On Windows:**
    ```bash
    copy models\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite tools\Seeed_Grove_Vision_AI_Module_V2\model_zoo\tflm_yolo11_od\yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite
+   copy makefile\makefile tools\Seeed_Grove_Vision_AI_Module_V2\EPII_CM55M_APP_S\makefile
    ```
 
 #### 1.5: Find Your USB Port Name
@@ -347,22 +349,3 @@ After uploading is complete:
 
 For connection diagrams and prototype images, see the [Connection Diagram documentation](documentation/connection_diagram.md).
 
----
-
-#### Troubleshooting
-
-**Problem: "ModuleNotFoundError: No module named 'serial'"**
-- Solution: Make sure you installed the requirements: `pip3 install -r xmodem/requirements.txt`
-
-**Problem: "Uart port open fail"**
-- Solution: Check that your USB port name is correct and no other program is using it
-
-**Problem: Upload doesn't start**
-- Solution: Make sure to press the RESET button on the Grove Vision AI V2 when prompted
-
-**Problem: "File not found"**
-- Solution: 
-  - Make sure you cloned the repository into `tools/Seeed_Grove_Vision_AI_Module_V2/` (see [1.1: Install this github repository](#11-install-this-github-repository-gv2-esp32))
-  - Check that the `output.img` file is in the correct location: `tools/Seeed_Grove_Vision_AI_Module_V2/we2_image_gen_local/output_case1_sec_wlcsp/output.img`
-  - Check that the model file `yolo11n_2025-09-01_224_e300_full_integer_quant_vela.tflite` is in: `tools/Seeed_Grove_Vision_AI_Module_V2/model_zoo/tflm_yolo11_od/`
-  - Make sure you copied the model file from the `models` folder in this repository to the Himax repository (see [1.4: Copy the YOLO11n Model File](#14-copy-the-yolo11n-model-file))

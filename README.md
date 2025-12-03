@@ -52,7 +52,8 @@ The system consists of two main components:
 
 ### 1 Grove Vision AI V2
 
-The Grove Vision AI V2 module needs special software (firmware) installed so it can send detection results to the ESP32-S3 microcontroller via UART1. This guide shows you how to install this software and the detection model (YOLO11n) that recognizes Asian hornets and look-alikes.
+The Grove Vision AI V2 module needs custom software (firmware) installed so it can send detection results to the ESP32-S3 microcontroller via UART1. This guide shows you how to install the HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2 repository, and then flash the custom firmware image and the detection model (YOLO11n) that recognizes Asian hornets and look-alikes.
+
 
 #### Prerequisites
 
@@ -205,7 +206,6 @@ Before flashing, you need to find the name of the USB port where your Grove Visi
 
 7. Wait for the upload to complete. You should see "xmodem_send bin file done!!" when finished.
 
-*** Troubleshooting** 
 **Troubleshooting**
 
 1. To get the Grove Vision AI V2 into boot mode, sometimes you need to:
@@ -226,11 +226,20 @@ After flashing is complete:
     - Download the [Himax AI web toolkit](https://github.com/HimaxWiseEyePlus/Seeed_Grove_Vision_AI_Module_V2/releases/download/v1.1/Himax_AI_web_toolkit.zip)
     - Unzip `Himax_AI_web_toolkit.zip`
     - Open the Himax_AI_web_toolkit folder en click `index.html`
+    - (Optional) Copy the custom JavaScript file to display the correct class names (from the project root):
+      
+      **On Mac/Linux:**sh
+      cp tools/Seeed_Grove_Vision_AI_Module_V2/index-legacy.51f14f00.js tools/Seeed_Grove_Vision_AI_Module_V2/Himax_AI_web_toolkit/assets/index-legacy.51f14f00.js
+            
+      **On Windows:**
+ 
+      copy tools\Seeed_Grove_Vision_AI_Module_V2\index-legacy.51f14f00.js tools\Seeed_Grove_Vision_AI_Module_V2\Himax_AI_web_toolkit\assets\index-legacy.51f14f00.js
+      
     - Select "Grove Vision AI(V2)", click "connect", choose your USB port
       <img src="media/himax_connect.png" alt="Serial port connection dialog" width="400">
     - Point the camera at a test image to see if detection works
       <img src="media/himax_test.png" alt="Himax AI web toolkit with detection results" width="500">
-      (to do: replace coco dataset class names by our classes)
+      
 
 #### Troubleshooting
 
@@ -252,6 +261,81 @@ After flashing is complete:
 
 ### 2 ESP32-S3
 
+The ESP32-S3 microcontroller needs the detection code uploaded so it can receive detection results from the Grove Vision AI V2 and control the indicator LEDs. This guide shows you how to upload the code using PlatformIO.
+
+#### Prerequisites
+
+Before starting, you need:
+
+1. **PlatformIO IDE** installed on your computer
+2. **XIAO ESP32-S3** board connected to your computer via USB-C (for hardware connections, see [Connection Diagram](documentation/connection_diagram.md))
+3. **This repository** cloned and set up (see [1.1: Install this github repository](#11-install-this-github-repository-gv2-esp32))
+
+#### 2.1: Install PlatformIO (if not already installed)
+
+**Option A: PlatformIO IDE (Recommended for beginners)**
+
+1. Install [Visual Studio Code](https://code.visualstudio.com/)
+2. Open VS Code and go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+3. Search for "PlatformIO IDE" and click Install
+4. Wait for the installation to complete
+
+**Option B: PlatformIO CLI**
+
+**On Mac/Linux:**
+```bash
+pip3 install platformio
+```
+
+**On Windows:**
+```bash
+pip install platformio
+```
+
+#### 2.2: Open the Project in PlatformIO
+
+1. Open PlatformIO IDE (VS Code with PlatformIO extension)
+2. Click "Open Project" or use File → Open Folder
+3. Navigate to and select the `gv2-esp32` folder (the root of this repository)
+4. PlatformIO will automatically detect the `platformio.ini` configuration file
+
+#### 2.3: Upload Code to ESP32-S3
+
+1. Make sure your XIAO ESP32-S3 is connected to your computer via USB-C
+2. In PlatformIO IDE, click the **flash** button (→ arrow icon) in the bottom toolbar, or:
+   - Use the keyboard shortcut: `Ctrl+Alt+U` (Windows/Linux) or `Cmd+Option+U` (Mac)
+   - Or use the menu: PlatformIO → Upload
+3. PlatformIO will:
+   - Build the project (compile the code)
+   - Upload the firmware to your ESP32-S3
+   - Show progress in the terminal
+
+**Alternative: Using PlatformIO CLI**
+
+If you prefer using the command line:
+
+1. Open a terminal in the project root (`gv2-esp32`)
+2. Run:
+   ```bash
+   pio run --target upload
+   ```
+
+#### 2.4: Verification
+
+After uploading is complete:
+
+1. The ESP32-S3 will restart automatically
+2. Open the Serial Monitor to see debug output:
+   - Click the **Serial Monitor** button (plug icon) in PlatformIO IDE
+   - Or use the keyboard shortcut: `Ctrl+Alt+S` (Windows/Linux) or `Cmd+Option+S` (Mac)
+   - Or use the menu: PlatformIO → Serial Monitor
+3. You should see:
+   - Startup messages: `=== GV2 UART1 Debug Test ===`
+   - `Initializing...`
+   - `=== Ready to receive ===`
+   - `LED Mapping:` with the LED pin assignments
+   - `Waiting for detection data from GV2...`
+4. The LEDs should blink in sequence (Green → Yellow → Red) to indicate the system is running
 
 
 ## 3 Connection between Grove Vision AI v2 and ESP32-S3

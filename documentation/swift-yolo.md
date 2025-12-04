@@ -75,11 +75,6 @@ Once deployed, you can immediately test the model:
 - Try a different USB port
 - Close any serial monitor programs that might be using the port
 
-**Problem: Model upload fails**
-- Check that the file is the correct `.tflite` format
-- Ensure your internet connection is stable
-- Try refreshing the page and uploading again
-
 **Problem: No detections appear**
 - Ensure adequate lighting for the camera
 - Try adjusting the confidence threshold in SenseCraft settings

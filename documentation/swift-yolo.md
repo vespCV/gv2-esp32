@@ -2,7 +2,7 @@
 
 > **Quick setup guide for the Grove Vision AI V2 using the SwiftYOLO model (192x192px) through the SenseCraft platform. Includes UART1 support for ESP32-S3 integration.**
 
-This guide provides a simpler alternative using the SenseCraft web platform. For improved detection accuracy, see the [YOLO11n setup](../README.md#flash-yolo11n-model-on-grove-vision-ai-v2) (224x224px) in the main README.
+This guide provides a simpler alternative using the SenseCraft web platform. 
 
 ---
 
@@ -23,7 +23,6 @@ Before starting, you need:
 
 1. **Grove Vision AI V2** module connected to your computer via USB
 2. A web browser (Chrome recommended)
-3. The SwiftYOLO model file from this repository: `models/vespcv_swiftyolo_int8_vela.tflite`
 
 ---
 
@@ -31,58 +30,29 @@ Before starting, you need:
 
 1. Connect your **Grove Vision AI V2** to your computer using a USB-C cable
 2. Make sure no other programs (serial monitors, etc.) are using the USB port
+3. Sign in or create a free **[Seeed account](https://sensecraft.seeed.cc/ai/home)**
 
 ---
 
-## Step 2: Open SenseCraft AI Model Upload Page
+## Step 2: Open SenseCraft AI Model
 
-1. Open your browser and navigate to: **[https://sensecraft.seeed.cc/ai/model/add](https://sensecraft.seeed.cc/ai/model/add)**
+1. Navigate to the **[vespa velutina detection model](https://sensecraft.seeed.cc/ai/view-model/61707-vespa-velutina-detection)**
 
-2. If prompted, sign in or create a free Seeed account
-
----
-
-## Step 3: Upload the SwiftYOLO Model
-
-1. On the model upload page, fill in the following details:
-
-   | Field | Value |
-   |-------|-------|
-   | **Model Name** | Vespa velutina detection (SwiftYOLO) |
-   | **Description** | Detection model for Vespa velutina (Asian hornet) and other bee/wasp species |
-   | **Device** | Grove Vision AI V2 |
-   | **Task Type** | Object Detection |
-
-2. Click **Browse** or drag-and-drop to upload the model file:
-
-   ```
-   models/vespcv_swiftyolo_int8_vela.tflite
-   ```
-
-3. Configure the model labels (in order):
-   - Label 0: `Apis mellifera`
-   - Label 1: `Vespa crabro`
-   - Label 2: `Vespula sp.`
-   - Label 3: `Vespa velutina`
-
-4. Click **Upload** or **Submit** to upload the model
 
 ---
 
-## Step 4: Deploy to Grove Vision AI V2
+## Step 3: Deploy to Grove Vision AI V2
 
-1. After the model is uploaded, navigate to your model in the SenseCraft workspace
+1. Click **Deploy** or **Send to Device**
 
-2. Click **Deploy** or **Send to Device**
-
-3. Select your Grove Vision AI V2 from the device list
+2. Select your Grove Vision AI V2 from the device list
    - If prompted to connect, click **Connect** and select the USB serial port for your device
 
-4. Wait for the deployment to complete (this may take a few minutes)
+3. Wait for the deployment to complete (this may take a few minutes)
 
 ---
 
-## Step 5: Test the Detection
+## Step 4: Test the Detection
 
 Once deployed, you can immediately test the model:
 
@@ -122,10 +92,7 @@ Once deployed, you can immediately test the model:
 Models uploaded via SenseCraft **include UART1 support built in**. This means:
 
 - The Grove Vision AI V2 can send detection results to the ESP32-S3
-- LED indicators on the ESP32-S3 will work with this setup
-- Full integration with the ESP32-S3 is supported
-
-After verifying the model works correctly via the SenseCraft preview, you can connect the Grove Vision AI V2 to the ESP32-S3 according to the [Connection Diagram](connection_diagram.md).
+- After verifying the model works correctly via the SenseCraft preview, you can connect the Grove Vision AI V2 to the ESP32-S3 according to the [Connection Diagram](connection_diagram.md).
 
 ---
 

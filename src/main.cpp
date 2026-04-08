@@ -6,23 +6,154 @@
 #include <ArduinoJson.h>
 
 // UART for Grove Vision AI V2
-HardwareSerial gv2Serial(0);
+// Use a dedicated UART peripheral for GV2 (pins are set in begin()).
+HardwareSerial gv2Serial(1);
 
 // LED pins
 const int ledPinGreen = 2;   // GPIO 2 (D1) - Apis mellifera (class 0)
-const int ledPinYellow = 3; // GPIO 3 (D2) - Vespa crabro (class 1) and Vespula sp (class 2)
+const int ledPinYellow = 3; // GPIO 3 (D2) - (optional / unused in fast mode)
 const int ledPinRed = 4;     // GPIO 4 (D3) - Vespa velutina (class 3)
 
-void setup() {
-  // USB Serial for debugging
-  Serial.begin(115200);
-  while (!Serial && millis() < 3000) {
-    ; // Wait for serial port to connect, max 3 seconds
+// Fast-boot tuning
+static const uint32_t NO_DATA_TIMEOUT_MS = 1500;
+
+// Lightweight parser state for extracting class IDs from `"boxes": [[...]]`
+static bool s_invokeSeen = false;
+static bool s_inBoxes = false;
+static uint8_t s_boxesBracketDepth = 0; // depth within boxes payload starting at first '[' after "boxes":
+static bool s_inBox = false;
+static int s_boxValueIndex = -1; // counts numeric values within a single box array; class is index 5
+static int s_currentNumber = 0;
+static bool s_inNumber = false;
+
+static bool s_hasOther = false; // classes 0/1/2 -> green
+static bool s_hasHornet = false; // class 3 -> red
+
+static inline void resetParseState() {
+  s_invokeSeen = false;
+  s_inBoxes = false;
+  s_boxesBracketDepth = 0;
+  s_inBox = false;
+  s_boxValueIndex = -1;
+  s_currentNumber = 0;
+  s_inNumber = false;
+}
+
+static inline void resetDetections() {
+  s_hasOther = false;
+  s_hasHornet = false;
+}
+
+static inline bool charMatchesAt(const char *pattern, size_t &idx, char c) {
+  if (c == pattern[idx]) {
+    idx++;
+    if (pattern[idx] == '\0') {
+      idx = 0;
+      return true;
+    }
+  } else {
+    idx = (c == pattern[0]) ? 1 : 0;
   }
-  
-  Serial.println("\n\n=== GV2 UART1 Debug Test ===");
-  Serial.println("Initializing...");
-  
+  return false;
+}
+
+static inline void feedCharToFastParser(char c) {
+  // Match minimal markers. We only care about INVOKE and boxes.
+  static size_t invokeIdx = 0;
+  static size_t boxesIdx = 0;
+  static size_t typeIdx = 0;
+
+  // New message heuristic: reset detections at the start of each INVOKE JSON blob.
+  // This avoids "sticky" LEDs across messages.
+  if (charMatchesAt("{\"type\": 1", typeIdx, c)) {
+    resetDetections();
+    resetParseState();
+    // We just matched a prefix; continue parsing from here.
+    s_invokeSeen = true;
+  }
+
+  if (!s_invokeSeen) {
+    // `"name": "INVOKE"` appears early; once seen, we start looking for boxes and numbers.
+    if (charMatchesAt("\"name\": \"INVOKE\"", invokeIdx, c)) {
+      s_invokeSeen = true;
+    }
+    return;
+  }
+
+  if (!s_inBoxes) {
+    if (charMatchesAt("\"boxes\":", boxesIdx, c)) {
+      s_inBoxes = true;
+      s_boxesBracketDepth = 0;
+      s_inBox = false;
+      s_boxValueIndex = -1;
+      s_inNumber = false;
+      s_currentNumber = 0;
+    }
+    return;
+  }
+
+  // We are inside boxes: parse bracket structure and integers.
+  if (c == '[') {
+    if (s_boxesBracketDepth < 255) s_boxesBracketDepth++;
+    // boxes looks like: [[box],[box],...]
+    // Depth 1: first '[' after "boxes":
+    // Depth 2: second '[' (start of first box)
+    // Depth 3+: nested arrays (not expected)
+    if (s_boxesBracketDepth == 2) {
+      s_inBox = true;
+      s_boxValueIndex = -1;
+      s_inNumber = false;
+      s_currentNumber = 0;
+    }
+    return;
+  }
+
+  if (c == ']') {
+    if (s_inNumber) {
+      // finalize number before closing bracket
+      s_boxValueIndex++;
+      if (s_inBox && s_boxValueIndex == 5) {
+        if (s_currentNumber == 3) s_hasHornet = true;
+        else s_hasOther = true;
+      }
+      s_inNumber = false;
+      s_currentNumber = 0;
+    }
+
+    if (s_boxesBracketDepth > 0) s_boxesBracketDepth--;
+    if (s_boxesBracketDepth < 2) {
+      s_inBox = false;
+      s_boxValueIndex = -1;
+    }
+    return;
+  }
+
+  // Parse integers only while inside a box.
+  if (!s_inBox) return;
+
+  if (c >= '0' && c <= '9') {
+    s_currentNumber = s_inNumber ? (s_currentNumber * 10 + (c - '0')) : (c - '0');
+    s_inNumber = true;
+    return;
+  }
+
+  if (s_inNumber) {
+    // Number ended; advance value index.
+    s_boxValueIndex++;
+    if (s_boxValueIndex == 5) {
+      // class id
+      if (s_currentNumber == 3) s_hasHornet = true;
+      else s_hasOther = true;
+    }
+    s_inNumber = false;
+    s_currentNumber = 0;
+  }
+}
+
+void setup() {
+  // Optional USB serial (do not wait; fastest boot)
+  Serial.begin(115200);
+
   // Configure UART for GV2 communication
   // RX: GPIO44 (D7), TX: GPIO43 (D6), Baud: 115200
   gv2Serial.begin(115200, SERIAL_8N1, 44, 43);
@@ -30,165 +161,41 @@ void setup() {
   // Set larger buffer for UART reception
   gv2Serial.setRxBufferSize(2048);
   
-  Serial.println("UART1 configured:");
-  Serial.println("  RX: GPIO44 (D7)");
-  Serial.println("  TX: GPIO43 (D6)");
-  Serial.println("  Baud: 115200");
-  Serial.println("  RX Buffer: 2048 bytes");
-  Serial.println("\nWaiting for data from GV2...\n");
-  
-  // Test: Try to read any initial data that might be in buffer
-  delay(100);
-  if (gv2Serial.available() > 0) {
-    Serial.println(">>> Found data in buffer immediately after init!");
-  }
-  
   // Initialize LED pins
   pinMode(ledPinGreen, OUTPUT);
   pinMode(ledPinYellow, OUTPUT);
   pinMode(ledPinRed, OUTPUT);
-  
-  // Blink all LEDs to show system is running
-  digitalWrite(ledPinGreen, HIGH);
-  digitalWrite(ledPinYellow, HIGH);
-  digitalWrite(ledPinRed, HIGH);
-  delay(500);
+
   digitalWrite(ledPinGreen, LOW);
   digitalWrite(ledPinYellow, LOW);
   digitalWrite(ledPinRed, LOW);
-  
-  Serial.println("=== Ready to receive ===\n");
-  Serial.println("LED Mapping:");
-  Serial.println("  Green (GPIO2/D1)  -> Apis mellifera (class 0)");
-  Serial.println("  Yellow (GPIO3/D2)  -> Vespa crabro (class 1) or Vespula sp (class 2)");
-  Serial.println("  Red (GPIO4/D3)     -> Vespa velutina (class 3)");
-  Serial.println();
-}
 
-// Forward declaration
-void processDetectionJSON(String jsonString);
+  resetParseState();
+  resetDetections();
+}
 
 void loop() {
-  static String jsonBuffer = "";
   static unsigned long lastDataTime = 0;
-  static unsigned long lastStatsTime = 0;
-  
-  // Read incoming data from GV2
+
+  // Read incoming stream from GV2 and update detection flags asap.
   while (gv2Serial.available() > 0) {
     char c = gv2Serial.read();
-    
-    // Accumulate characters until we get a complete JSON line (ends with \n)
-    if (c == '\n' || c == '\r') {
-      if (jsonBuffer.length() > 0) {
-        // Try to parse JSON
-        processDetectionJSON(jsonBuffer);
-        jsonBuffer = "";
-      }
-    } else {
-      jsonBuffer += c;
-      // Prevent buffer overflow
-      if (jsonBuffer.length() > 2048) {
-        jsonBuffer = "";
-      }
-    }
-    
     lastDataTime = millis();
-  }
-  
-  // Turn off LEDs if no data received for 2 seconds (timeout)
-  if (millis() - lastDataTime > 2000) {
-    digitalWrite(ledPinGreen, LOW);
-    digitalWrite(ledPinYellow, LOW);
-    digitalWrite(ledPinRed, LOW);
-  }
-  
-  // Print statistics every 5 seconds
-  if (millis() - lastStatsTime > 5000) {
-    lastStatsTime = millis();
-    if (lastDataTime == 0 || (millis() - lastDataTime > 5000)) {
-      Serial.println(">>> Waiting for detection data from GV2...");
-    } else {
-      Serial.println(">>> System active - receiving detections");
-    }
-  }
-  
-  delay(10);
-}
+    feedCharToFastParser(c);
 
-void processDetectionJSON(String jsonString) {
-  // Filter: Only process INVOKE messages (type 1)
-  if (!jsonString.startsWith("{\"type\": 1")) {
-    return;
+    // Apply LEDs immediately based on latest seen detections.
+    digitalWrite(ledPinGreen, s_hasOther ? HIGH : LOW);
+    digitalWrite(ledPinRed, s_hasHornet ? HIGH : LOW);
   }
-  
-  // Parse JSON
-  StaticJsonDocument<2048> doc;
-  DeserializationError error = deserializeJson(doc, jsonString);
-  
-  if (error) {
-    Serial.printf(">>> JSON parse error: %s\n", error.c_str());
-    return;
+
+  // Timeout: if stream stops, clear LEDs and reset parser/detections.
+  if (lastDataTime != 0 && (millis() - lastDataTime > NO_DATA_TIMEOUT_MS)) {
+    digitalWrite(ledPinGreen, LOW);
+    digitalWrite(ledPinRed, LOW);
+    resetParseState();
+    resetDetections();
+    lastDataTime = 0;
   }
-  
-  // Check if this is an INVOKE message
-  if (doc["type"] != 1 || doc["name"] != "INVOKE") {
-    return;
-  }
-  
-  // Get the data object
-  JsonObject data = doc["data"];
-  if (data.isNull()) {
-    return;
-  }
-  
-  // Get count and boxes array
-  int count = data["count"] | 0;
-  JsonArray boxes = data["boxes"];
-  
-  // Track which classes are detected
-  bool hasClass0 = false; // Apis mellifera (bees) -> Green
-  bool hasClass1 = false; // Vespa crabro -> Yellow
-  bool hasClass2 = false; // Vespula sp -> Yellow
-  bool hasClass3 = false; // Vespa velutina -> Red
-  
-  // Process each detection box
-  // Format: [x, y, w, h, score, target]
-  // target is the class ID (index 5 in the array)
-  for (size_t i = 0; i < boxes.size(); i++) {
-    JsonArray box = boxes[i];
-    if (box.size() >= 6) {
-      int target = box[5]; // Class ID is at index 5
-      
-      switch (target) {
-        case 0:
-          hasClass0 = true;
-          break;
-        case 1:
-          hasClass1 = true;
-          break;
-        case 2:
-          hasClass2 = true;
-          break;
-        case 3:
-          hasClass3 = true;
-          break;
-      }
-    }
-  }
-  
-  // Control LEDs based on detected classes
-  digitalWrite(ledPinGreen, hasClass0 ? HIGH : LOW);
-  digitalWrite(ledPinYellow, (hasClass1 || hasClass2) ? HIGH : LOW);
-  digitalWrite(ledPinRed, hasClass3 ? HIGH : LOW);
-  
-  // Debug output
-  if (count > 0) {
-    Serial.printf(">>> Detection: count=%d, Class0=%s, Class1=%s, Class2=%s, Class3=%s\n",
-                  count,
-                  hasClass0 ? "YES" : "NO",
-                  hasClass1 ? "YES" : "NO",
-                  hasClass2 ? "YES" : "NO",
-                  hasClass3 ? "YES" : "NO");
-  }
+  // No delay: maximize responsiveness.
 }
 

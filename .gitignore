@@ -21,8 +21,8 @@ compile_commands.json
 Himax_gv2_esp32
 
 # Ignore cloned Grove Vision AI V2 repository
-tools/Seeed_Grove_Vision_AI_Module_V2/*
-!tools/Seeed_Grove_Vision_AI_Module_V2/.gitkeep
+# tools/Seeed_Grove_Vision_AI_Module_V2/*
+# !tools/Seeed_Grove_Vision_AI_Module_V2/.gitkeep
 
 ## Himax firmware
 

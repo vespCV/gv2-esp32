@@ -1,6 +1,8 @@
 # Vespa velutina detection with Grove Vision AI V2 and esp32-S3
 
-> **Automated detection system for Vespa velutina (Asian - Yellow Legged Hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing.**
+>Note: Active development has relocated to aggerritsen/VespaSmartTrap-BASE. This repository is kept in archive status to maintain Git submodule updates from external providers if needed. 
+
+**Automated detection system for Vespa velutina (Asian - Yellow Legged Hornet) using computer vision. Combines Grove Vision AI V2 for real-time object detection with ESP32-S3 for processing.**
 
 ## Goal
 
